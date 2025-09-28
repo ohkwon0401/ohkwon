@@ -28,4 +28,4 @@ jobs:
           AZURE_KEY: ${{ secrets.AZURE_KEY }}
           AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
         run: |
-          python scripts/scan.py
+          python scripts/pii_scan.py
