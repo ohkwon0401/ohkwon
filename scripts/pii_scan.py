@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
 import os
 import sys
 import json
@@ -18,12 +15,16 @@ if not endpoint or not key:
 # 루트 디렉토리 (repo 최상단)
 root_dir = os.path.dirname(os.path.dirname(__file__))
 
-# 루트 밑 모든 .py 파일 찾기
-py_files = glob.glob(os.path.join(root_dir, "*.py"))
+# 루트 밑 모든 .py 파일 찾기 (하위 폴더 포함)
+py_files = glob.glob(os.path.join(root_dir, "**", "*.py"), recursive=True)
 
 if not py_files:
     print(f"Python 파일을 찾을 수 없습니다: {root_dir}")
     sys.exit(0)
+
+print("=== py_files found in repo ===")
+for f in py_files:
+    print(f)
 
 all_entities = []
 
