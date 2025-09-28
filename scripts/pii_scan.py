@@ -14,14 +14,15 @@ if not endpoint or not key:
     print("환경 변수가 설정되지 않았습니다. (AZURE_ENDPOINT, AZURE_KEY 필요)")
     sys.exit(0)  # 경고만, 항상 성공 처리
 
-# 검사할 파일
-file_to_scan = os.path.join(os.path.dirname(__file__), "test.py")
+# 검사할 파일 경로 (루트에 있는 test.py)
+root_dir = os.path.dirname(os.path.dirname(__file__)) 
+file_path = os.path.join(root_dir, "test.py")
 
-if not os.path.exists(file_to_scan):
-    print(f"파일을 찾을 수 없습니다: {file_to_scan}")
+if not os.path.exists(file_path):
+    print(f"파일을 찾을 수 없습니다: {file_path}")
     sys.exit(0)
 
-with open(file_to_scan, "r", encoding="utf-8", errors="ignore") as f:
+with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
     content = f.read()
 
 # API 호출
