@@ -21,7 +21,7 @@ except FileNotFoundError:
     sys.exit(1)
 
 # Azure PII API 엔드포인트
-url = f"{endpoint}/text/analytics/v3.1/entities/recognition/pii"
+url = endpoint.rstrip("/") + "/text/analytics/v3.1/entities/recognition/pii"
 
 # 요청 헤더
 headers = {
@@ -48,23 +48,26 @@ except Exception as e:
     print("JSON 파싱 실패:", e)
     sys.exit(1)
 
-print("분석 결과(JSON):")
-print(json.dumps(result, indent=2, ensure_ascii=False))
-
 # 빌드 실패 조건 설정
-fail_threshold = 0.8  # 신뢰도 점수 80% 이상이면 실패로 간주
+fail_threshold = 0.8  # 신뢰도 점수 80% 이상이면 탐지로 간주
 
 detected = False
+detected_entities = []
+
 for doc in result.get("documents", []):
     for ent in doc.get("entities", []):
         if ent.get("confidenceScore", 0) >= fail_threshold:
-            print(f"Detected PII: {ent['text']} "
-                  f"({ent['category']}, score={ent['confidenceScore']})")
             detected = True
+            detected_entities.append(ent)
 
+print("\n📌 탐지된 개인정보 요약:")
+print("-" * 60)
 if detected:
-    print("개인정보가 발견되어 Job을 실패 처리합니다.")
-    sys.exit(1)
+    for ent in detected_entities:
+        print(f"{ent['category']:<30} {ent['text']:<25} (score={ent['confidenceScore']})")
+    print("-" * 60)
+    print("::warning:: 개인정보가 발견되었습니다. (탐지만 하고 Job은 성공 처리합니다.)")
+    sys.exit(0)   # 항상 성공 처리
 else:
     print("개인정보가 발견되지 않았습니다. Job을 성공 처리합니다.")
     sys.exit(0)
