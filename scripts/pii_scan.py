@@ -63,11 +63,8 @@ for doc in result.get("documents", []):
 print("\n📌 탐지된 개인정보 요약:")
 print("-" * 60)
 if detected:
-    for ent in detected_entities:
-        print(f"{ent['category']:<30} {ent['text']:<25} (score={ent['confidenceScore']})")
-    print("-" * 60)
     print("::warning:: 개인정보가 발견되었습니다. (탐지만 하고 Job은 성공 처리합니다.)")
-    sys.exit(0)   # 항상 성공 처리
+    sys.exit(0)  # 무조건 성공 처리
 else:
     print("개인정보가 발견되지 않았습니다. Job을 성공 처리합니다.")
     sys.exit(0)
