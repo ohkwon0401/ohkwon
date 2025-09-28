@@ -1,8 +1,32 @@
-- name: Run PII Scan
-  run: |
-    echo "===== PII Scan Start ====="
-    python scripts/pii_scan.py
-    echo "===== PII Scan End ====="
-  env:
-    AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
-    AZURE_KEY: ${{ secrets.AZURE_KEY }}
+name: PII Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run PII Scan
+        run: |
+          echo "===== PII Scan Start ====="
+          python scripts/pii_scan.py
+          echo "===== PII Scan End ====="
+        env:
+          AZURE_ENDPOINT: ${{ secrets.AZURE_ENDPOINT }}
+          AZURE_KEY: ${{ secrets.AZURE_KEY }}
